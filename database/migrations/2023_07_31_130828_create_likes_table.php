@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 8);
-            $table->string('liked_user_id', 8);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('liked_user_id');
+            $table->foreignId('user_id');
             $table->foreign('liked_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('status', [1, 2])->default(1);
             $table->timestamps();

@@ -1,47 +1,45 @@
 @extends('master')
 
-@section('title', 'Home')
+@section('title', 'Wedding')
 
 @section('content')
 @include('navbar')
-<div>
-    {{-- @dd(asset('storage/' . $candidate[0]['imagePath'])); --}}
-    <img id="userImage" src="" alt="User Image">
-    <h3 id="userName">{{ $candidate[0]['name'] }}</h3>
-  </div>
-  <button id="likeButton">Like</button>
-  <button id="dislikeButton">Dislike</button>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    const candidate = @json($candidate->toArray()); // Convert Laravel Collection to JavaScript array
+<div class="flex flex-row h-screen justify-center">
+    <div class="container">
+        <form action="/search" method="GET">
+            <input type="text" name="query" placeholder="Search by hobby or field of work">
+            <select name="gender" id="gender">
+                <option value="">All Genders</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
 
-    let currentUserIndex = 0;
+        <div class="flex flex-wrap justify-between mx-auto">
+            @foreach ($friends as $friend)
+                <div class="flex card w-1/3">
+                    <input type="hidden" id='friendId' value={{$friend->id}}>
+                    <img src="{{ asset($friend['image']) }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $friend['name'] }}</h5>
+                    </div>
+                    <button id="likeButton">Thumbs</button>
+                </div>
+            @endforeach
+        </div>
 
-    function showUser() {
-      const userImage = document.getElementById("userImage");
-      const userName = document.getElementById("userName");
 
-      // Get the current user data
-      const currentUser = candidate[currentUserIndex];
+        <div class="flex flex-row align-center justify-center">
+            {{ $friends->links() }}
+        </div>
+    </div>
+</div>
 
-      // Update the HTML with the current user data
-      userImage.src = 'storage/' + currentUser.imagePath;
-      userName.textContent = currentUser.name;
-    }
-
-    function dislikeUser() {
-      // Increment the index to show the next user
-      currentUserIndex = (currentUserIndex + 1) % candidate.length;
-
-      // Display the next user
-      showUser();
-    }
-
+<script>
+    const candidateId = document.getElementById('friendId');
     function likeUser() {
-    // Assuming candidate[currentUserIndex] has the necessary candidate data.
-    var candidateId = candidate[currentUserIndex]['id'];
-    // Make an AJAX request to the backend API endpoint to check if the user has liked the candidate.
     $.ajax({
         type: 'GET',
         url: '/checkLike/' + candidateId, // Replace with your actual API endpoint URL.
@@ -49,15 +47,7 @@
             if (response.hasLiked) {
                 // The current user has already liked the candidate.
                 // Handle this situation accordingly.
-                window.location.href = '/wedding';
-            } else {
-                // The current user has not liked the candidate yet.
-                // Perform the actions to like the candidate.
-                // Increment the index to show the next user
-                currentUserIndex = (currentUserIndex + 1) % candidate.length;
-
-                // Display the next user
-                showUser();
+                window.location.href = '/chat';
             }
         },
         error: function() {
@@ -66,14 +56,9 @@
     });
 }
 
-    // Show the first user when the page loads
-    showUser();
-
     // Add click event listener to the next button
-    const likeButton = document.getElementById("likeButton");
-    const dislikeButton = document.getElementById("dislikeButton");
-    likeButton.addEventListener("click", likeUser);
-    dislikeButton.addEventListener("click", dislikeUser);
+    const nextButton = document.getElementById("nextButton");
+    nextButton.addEventListener("click", nextUser);
     </script>
-
 @endsection
+

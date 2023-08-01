@@ -46,41 +46,50 @@ class UserController extends Controller
 
     public function storeRegister(Request $request)
     {
-        $genderCode = $request->gender == "male" ? "01" : "02";
-        $id = "SKY" . $request->datingCode . $genderCode;
-        $request->merge(['id' => $id]);
-
+        $price = rand(100000, 125000);
         $validated = $request->validate([
-            'id' => 'unique:users',
             'name' => 'required|regex:/^[\pL\s]+$/u',
-            'email' => 'required|email|unique:users',
-            'datingCode' => 'required|regex:/^[0-9]{3}$/',
-            'birthdate' => 'required|date',
+            'hobbies' => 'required|string|max:1000|regex:/^([^\n]*\n){3,}[^\n]*$/',
+            'instagramUsername' => 'required|/^https:\/\/www\.instagram\.com\/[a-zA-Z0-9_]+\/$/',
             'gender' => 'required|in:male,female',
             'phoneNumber' => 'required|regex:/^[0-9]{10,14}$/',
             'image' => 'required|image',
             'password' => 'required|string|min:8',
-            'passwordConfirmation' => 'required|string',
         ]);
 
         $validated['image']  = $request->file('image')->store('profile');
 
         $user = User::create([
-            'id' => $id,
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'datingCode' => "DT" . $validated['datingCode'],
-            'birthdate' => $validated['birthdate'],
+            'hobbies' => $validated['hobbies'],
+            'instagramUsername' => $validated['instagramUsername'],
             'gender' => $validated['gender'],
-            'phoneNumber' => "+65" . $validated['phoneNumber'],
+            'phoneNumber' => $validated['phoneNumber'],
             'imagePath' => $validated['image'],
             'password' => Hash::make($validated['password']),
-            'banned' => 0
+            'wallet' => $price
         ]);
 
-        return redirect("/login")->with('success', 'Selamat akun anda berhasil dibuat, anda dapat login menggunakan ' . $validated['email'] . ' atau ' . $id);
+        return view('payment', compact('user'));
     }
 
+    public function payment(Request $request){
+    $user = auth()->user()->id;
+    $amount = $request->amount;
+
+    if ($amount < $user->registrationPrice) {
+        // User underpaid, store the warning message in the session
+        $underpaidAmount = $user->registrationPrice - $amount;
+        return redirect()->back()->with('underpaid', "You are still underpaid $underpaidAmount");
+    } elseif ($amount > $user->registrationPrice) {
+        // User overpaid, store the message in the session
+        $overpaidAmount = $amount - $user->registrationPrice;
+        return redirect()->back()->with('overpaid', "Sorry you overpaid $overpaidAmount, would you like to enter a into balance?");
+    } else{
+
+    }
+
+    }
     public function createLogin()
     {
         return view('login');

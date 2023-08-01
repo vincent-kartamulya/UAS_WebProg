@@ -4,44 +4,50 @@
 
 @section('content')
 
-@if(session('error'))
-    <div class="alert alert-danger bg-red-600 text-white z-3">
-        {{ session('error') }}
-    </div>
-@endif
-
-<div class="flex flex-row h-screen justify-center">
-
-    <div class="w-1/2 flex flex-col h-screen items-center justify-center">
-        <h1>SkyUniverse</h1>
-        <div class="flex flex-col bg-red-100 container w-5/6 items-center justify-center">
-                <h2 class="fw-bold">Login</h2>
-                <form class="w-full items-center" caction="/login" method="POST">
-                @csrf
-                    <div class="px-10 mb-3 flex flex-col">
-                        <label for="email">Id or Email address</label>
-                        <input name="email" type="text" class="" value="{{ old('email') }}" id="email">
-                        @error('email')
-                            <div id="emailHelp">{{ $message }}</div>
-                        @enderror
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 :text-white">
+            Connect Friends
+        </a>
+        <div class="w-full bg-white rounded-lg shadow :border md:mt-0 sm:max-w-md xl:p-0 :bg-gray-800 :border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl :text-white">
+                    Sign in to your account
+                </h1>
+                <form class="space-y-4 md:space-y-6" action="#">
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 :text-white">Name</label>
+                            <input name="name" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 :bg-gray-700 :border-gray-600 :placeholder-gray-400 :text-white :focus:ring-blue-500 :focus:border-blue-500" value="{{ old('name') }}" id="name">
+                            @error('name')
+                                <div id="nameError" class="text-red-600">{{ $message }}</div>
+                            @enderror
                     </div>
-                    <div class="px-10 mb-3 w-full flex flex-col">
-                        <label for="password" class="form-label">Password</label>
-                        <input name="password" type="password" class="form-control" id="password">
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 :text-white">Password</label>
+                        <input name="password" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 :bg-gray-700 :border-gray-600 :placeholder-gray-400 :text-white :focus:ring-blue-500 :focus:border-blue-500" type="password" id="password">
                         @error('password')
-                            <div id="passwordHelp">{{ $message }}</div>
+                            <div id="passwordError" class="text-red-600">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-                        Submit
-                    </button>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                              <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 :bg-gray-700 :border-gray-600 :focus:ring-primary-600 :ring-offset-gray-800" required="">
+                            </div>
+                            <div class="ml-3 text-sm">
+                              <label for="remember" class="text-gray-500 :text-gray-300">Remember me</label>
+                            </div>
+                        </div>
+                        <a href="#" class="text-sm font-medium text-primary-600 hover:underline :text-primary-500">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white bg-b hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign in</button>
+                    <p class="text-sm font-light text-gray-500 :text-gray-400">
+                        Don’t have an account yet? <a href="/register" class="font-medium text-primary-600 hover:underline :text-primary-500">Sign up</a>
+                    </p>
                 </form>
-            <p>Copyright @ studio 2022</p>
+            </div>
         </div>
     </div>
-    <div class="w-1/2 flex h-screen  items-center justify-center">
-        <img class="w-4/6" src="wedding.png" alt="">
-    </div>
 
-</div>
+
+
 @endsection
